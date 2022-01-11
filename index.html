@@ -11,8 +11,9 @@
       .show { display: flex; }
       body { background-color: #eee; font-family: 'Spartan', sans-serif; }
 
-      #banner { position: absolute; top: 0px; left: 0px; right: 0px; background-color: black; color: white; display: flex; height: 80px; line-height: 80px; font-size: 40px; padding: 0px 20px; }
-      #banner a { text-decoration: none; color: white; }
+      #banner { position: absolute; top: 0px; left: 0px; right: 0px; background-color: black; color: white; display: flex; height: 80px; line-height: 80px; font-size: 40px; padding: 0px 20px; justify-content: space-between;}
+      #banner a.logo { text-decoration: none; color: white; }
+      #banner a.code { text-decoration: none; font-size: 20px; border: solid white; line-height: 32px; align-self: center; padding: 10px; background-color: black; color: white; height: 25px; font-family: 'Spartan', sans-serif }
 
       #setupcontent { text-align: center; padding-top: 30vh; }
       #form { padding-top: 40px; }
@@ -30,7 +31,8 @@
   </head>
   <body>
     <nav id='banner'>
-      <a href='/' target='_blank'>last tab standing!</a>
+      <a class='logo' href='/' target='_blank'>last tab standing!</a>
+      <a class='code' href="https://github.com/millerjames01/last-tab-standing">View Code</a>
     </nav>
     <!-- Initial content  -->
     <div id="setupcontent">
