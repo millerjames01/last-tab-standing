@@ -1,5 +1,8 @@
 # Last Tab Standing
 
+![Last Tab Standing Screenshot](https://user-images.githubusercontent.com/3317059/148871434-7d7a5040-224a-4a5b-8827-f5ec8a26d0fc.png)
+
+
 This is a first demo project I've done to practice developing web applications in JavaScript.
 
 **Last Tab Standing** is a simple web game where you score by keeping the game open in a tab.
@@ -14,6 +17,7 @@ To run this project, you'll need `npm`
 ([install info. here](https://docs.npmjs.com/downloading-and-installing-node-js-and-npm)).
 
 In the central directory run:
+
     node app.js
 
 Then, open your browser and visit [localhost:3000](http:/localhost:3000).
