@@ -2,7 +2,7 @@
 
 This is a first demo project I've done to practice developing web applications in JavaScript.
 
-*Last Tab Standing* is a simple web game where you score by keeping the game open in a tab.
+**Last Tab Standing** is a simple web game where you score by keeping the game open in a tab.
 The longer you keep the tab open, the higher you climb up the leaderboard.
 
 The backend is written with [Express](https://expressjs),
