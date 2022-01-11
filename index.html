@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Last Tab Standing</title>
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Spartan:wght@700&display=swap" rel="stylesheet">
+    <style>
+      .hide { display: none; }
+      .show { display: flex; }
+      body { background-color: #eee; font-family: 'Spartan', sans-serif; }
+
+      #banner { position: absolute; top: 0px; left: 0px; right: 0px; background-color: black; color: white; display: flex; height: 80px; line-height: 80px; font-size: 40px; padding: 0px 20px; }
+      #banner a { text-decoration: none; color: white; }
+
+      #setupcontent { text-align: center; padding-top: 30vh; }
+      #form { padding-top: 40px; }
+      #form input { font-size: 50px; border: none; border-bottom: 2px solid black; background-color: #eee; text-align: center; padding-bottom: 4px; }
+      
+      #centercontent { text-align: center; margin-top: 20vh; flex-direction: column; align-content: center; }
+      #stopwatch { height: 500px; width: 500px; background-image: url('images/stopwatch.png'); align-self: center; }
+      #secondhand { height: 200px; width: 15px; background-color: #333; border-radius: 20px; position: relative; top: 110px; left: 240px; transform-origin: 7.5px 172px; }
+      
+      #leaderboard { background-color: white; list-style-type: none; display: flex; justify-content: space-around; position: absolute; bottom: 0px; left: 0px; right: 0px; margin: 0px 40px; padding: 0px; height: 120px; border: 3px solid #333; border-bottom: none; }
+      #leaderboard li { text-align: center; font-size: 24px; line-height: 30px; width: 200px; padding: 10px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      #leaderboard li.self { background-color: #ddd; }
+      #leaderboard li .rank { font-family: 'Permanent Marker', cursive; font-size: 36px; }
+    </style>
+  </head>
+  <body>
+    <nav id='banner'>
+      <a href='/' target='_blank'>last tab standing!</a>
+    </nav>
+    <!-- Initial content  -->
+    <div id="setupcontent">
+      <h1 id="title">Put in your name, keep the tab open, climb the leaderboard!</h1>
+      <form id="form" action="">
+        <input id="input" type='text' placeholder='Enter your name...'>
+      </form>
+    </div>
+    <!-- Post sign-in content -->
+    <div id="centercontent" class="hide">
+      <div id="stopwatch">
+        <div id="secondhand"></div>
+      </div>
+      <h1 id="news">Current Score: 0s</h1>
+    </div>
+    <ol id="leaderboard">
+      <li><span class='rank'>1</span><br><span class='player'>...</span></li>
+      <li><span class='rank'>2</span><br><span class='player'>...</span></li>
+      <li><span class='rank'>3</span><br><span class='player'>...</span></li>
+      <li><span class='rank'>4</span><br><span class='player'>...</span></li>
+      <li><span class='rank'>5</span><br><span class='player'>...</span></li>
+    </ol>
+  </body>
+  <script src='/socket.io/socket.io.js'></script>
+  <script>
+    var socket = io();
+
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      if (input.value) {
+        socket.emit('username', input.value);
+        setupcontent.className = 'hide';
+        centercontent.className = 'show';
+        animateHand();
+      }
+    });
+
+    socket.on('update', function(msg) {
+      news.innerHTML = msg;
+    });
+
+    socket.on('leaderboard', function(users) {
+      for(var i = 0; i < leaderboard.children.length; i++) {
+        var toUpdate = leaderboard.children[i];
+        var userId = '';
+
+        if(i < users.length) {
+          userId = users[i]['id'];
+          toUpdate.innerHTML = leaderboardSpot(i + 1, users[i]);
+        } else {
+          toUpdate.innerHTML = emptyLeaderboardSpot(i + 1);
+        }
+
+        // change style if this user is the active user
+        if(socket.id === userId) {
+          toUpdate.className = 'self';
+        } else {
+          toUpdate.className = '';
+        }
+      }
+    });
+
+    function formatTime(time) {
+      var milliCount = Date.now() - time;
+      var seconds = Math.round(milliCount / 1000);
+      if(seconds < 1000) {
+        return seconds + 's';
+      } else {
+        var ones = Math.floor(seconds / 1000);
+        var tenths = Math.floor(seconds / 100) % 10;
+        return ones + '.' + tenths +'k s';
+      }
+    }
+
+    function leaderboardSpot(rank, user) {
+      return (
+        `<span class='rank'>${rank}</span><br>` +
+        `<span class='player'>${user['name']}</span><br>` +
+        `<span class='score'>${formatTime(user['time'])}</span>`
+      );
+    }
+
+    function emptyLeaderboardSpot(rank) {
+      return (
+        `<span class='rank'>${rank}</span><br>` +
+        '<span class="player">...</span><br>'
+      );
+    }
+
+    function animateHand() {
+      var count = 0;
+      setInterval(() => {
+        count = (count + 0.2) % 360; 
+        secondhand.style.transform = 'rotate(' + + count + 'deg)';
+      }, 1000 / 30);
+    }
+  </script>
+</html>
